@@ -24,7 +24,9 @@ static void server_init(int *listen_socket, struct conf *config) {
 		print_error_and_exit("Creating listening socket");
 	}
 
-	FILE *config_file = open_config_file("ports.conf", strlen("ports.conf"));
+	init_default_conf_dir("/home/shizzer/stoneshire/conf/", config);
+
+	FILE *config_file = open_config_file("ports.conf", strlen("ports.conf"), config);
 	if (config_file == NULL) {
 		print_error_and_exit("Opening config file");
 	}
