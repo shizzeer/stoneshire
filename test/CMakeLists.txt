@@ -12,3 +12,7 @@ add_cmocka_test(test_open_conf_f
 				LINK_LIBRARIES ${CMOCKA_LIB}
 				LINK_OPTIONS "-Wl,--wrap=fopen")
 
+add_cmocka_test(test_fget_conf_value
+				SOURCES test_fget_conf_value.c ${CONFIG_TEST} ${ERR_HANDLERS}
+				LINK_LIBRARIES ${CMOCKA_LIB}
+				LINK_OPTIONS "-Wl,--wrap=getline,--wrap=__isoc99_sscanf,--wrap=strcmp")
