@@ -511,6 +511,19 @@ test_open_conf_f/fast:
 	$(MAKE) -f test/CMakeFiles/test_open_conf_f.dir/build.make test/CMakeFiles/test_open_conf_f.dir/build
 .PHONY : test_open_conf_f/fast
 
+#=============================================================================
+# Target rules for targets named test_fget_conf_value
+
+# Build rule for target.
+test_fget_conf_value: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_fget_conf_value
+.PHONY : test_fget_conf_value
+
+# fast build rule for target.
+test_fget_conf_value/fast:
+	$(MAKE) -f test/CMakeFiles/test_fget_conf_value.dir/build.make test/CMakeFiles/test_fget_conf_value.dir/build
+.PHONY : test_fget_conf_value/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -550,6 +563,7 @@ help:
 	@echo "... ContinuousUpdate"
 	@echo "... stoneshire"
 	@echo "... test_open_conf_f"
+	@echo "... test_fget_conf_value"
 .PHONY : help
 
 
