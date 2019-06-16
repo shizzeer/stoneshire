@@ -13,13 +13,12 @@ int fget_conf_value(FILE *conf_file, struct conf *config, const char *property) 
 	size_t size_of_the_line = 0;
 
 	while (getline(&line, &size_of_the_line, conf_file) != -1) {
-		if (sscanf(line, "%s %d", config->property_from_file, &config->property_value) == 2) {
+		if (sscanf(line, "%50s %d", config->property_from_file, &config->property_value) == 2) {
 			if ((strcmp(config->property_from_file, property)) == 0) {
-				puts(property);
 				free(line);
 				return config->property_value;
 			}
-		} else if (ferror(conf_file)) {
+		} else if (ferror(conf_file)) {	
 			print_error_and_exit("Configuration file read");
 		}
 	}
@@ -29,7 +28,7 @@ int fget_conf_value(FILE *conf_file, struct conf *config, const char *property) 
 }
 
 FILE *open_config_file(const char *filename_with_ext, size_t filename_len) {
-	char *config_file_path = (char *)malloc(CONFIG_PATH_LEN + filename_len);	
+	char *config_file_path = (char *)malloc(CONFIG_PATH_LEN + filename_len);
 	if (config_file_path == NULL) {
 		print_error_and_exit("Malloc for config_file_path");
 	}
