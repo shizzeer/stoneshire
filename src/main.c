@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <stdbool.h>
 
 #include "err_handlers.h"
 #include "conf.h"
 
 static void server_init(int *listen_socket, struct conf *config);
+static bool port_is_valid(struct conf *config);
 
 int main() {
 
@@ -16,6 +18,14 @@ int main() {
 	server_init(&listen_socket, &config);
 
 	return 0;
+}
+
+static bool port_is_valid(struct conf *config) {
+	if (config->property_value >= 1024 && config->property_value <= 49151) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 static void server_init(int *listen_socket, struct conf *config) {
@@ -30,6 +40,10 @@ static void server_init(int *listen_socket, struct conf *config) {
 	}
 
 	config->property_value = fget_conf_value(config_file, config, "PORT:");
+	if (!port_is_valid(config)) {
+		fprintf(stderr, "%s\n", "Listening port is not valid. Try to use port from 1024 to 49151 (user ports).");
+		exit(EXIT_FAILURE);
+	}
 
 	/* -----------------------------------------------------------------------------------------------
 		KOLEJNY KROK TO KONFIGURACJA POBRANEGO PORTU, A KONKRETNIE ZAMIANA PORTU Z WARTOSCI SHORT NA 
