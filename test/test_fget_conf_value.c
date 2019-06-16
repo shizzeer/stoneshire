@@ -79,7 +79,7 @@ static void test_getline_fail(bool test_getline_fail) {
 
 static void test_sscanf_fail(bool test_sscanf_fail) {
 	expect_not_value(__wrap___isoc99_sscanf, str, NULL);
-	expect_string(__wrap___isoc99_sscanf, format, "%s %d");
+	expect_string(__wrap___isoc99_sscanf, format, "%50s %d");
 	
 	if (test_sscanf_fail) {
 		will_return(__wrap___isoc99_sscanf, false);
