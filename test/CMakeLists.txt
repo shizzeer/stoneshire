@@ -7,8 +7,8 @@ set(ERR_HANDLERS ${CMAKE_SOURCE_DIR}/src/err_handlers.c)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 find_library(CMOCKA_LIB cmocka HINTS /usr/local/lib/)
 
-add_cmocka_test(test_open_conf_f 
-				SOURCES test_open_conf_f.c ${CONFIG_TEST} ${ERR_HANDLERS} 
+add_cmocka_test(test_open_file 
+				SOURCES test_open_file.c ${CONFIG_TEST} ${ERR_HANDLERS} 
 				LINK_LIBRARIES ${CMOCKA_LIB}
 				LINK_OPTIONS "-Wl,--wrap=fopen,--wrap=malloc")
 
