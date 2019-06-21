@@ -499,17 +499,17 @@ stoneshire/fast:
 .PHONY : stoneshire/fast
 
 #=============================================================================
-# Target rules for targets named test_open_conf_f
+# Target rules for targets named test_open_file
 
 # Build rule for target.
-test_open_conf_f: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 test_open_conf_f
-.PHONY : test_open_conf_f
+test_open_file: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 test_open_file
+.PHONY : test_open_file
 
 # fast build rule for target.
-test_open_conf_f/fast:
-	$(MAKE) -f test/CMakeFiles/test_open_conf_f.dir/build.make test/CMakeFiles/test_open_conf_f.dir/build
-.PHONY : test_open_conf_f/fast
+test_open_file/fast:
+	$(MAKE) -f test/CMakeFiles/test_open_file.dir/build.make test/CMakeFiles/test_open_file.dir/build
+.PHONY : test_open_file/fast
 
 #=============================================================================
 # Target rules for targets named test_fget_conf_value
@@ -562,7 +562,7 @@ help:
 	@echo "... ContinuousStart"
 	@echo "... ContinuousUpdate"
 	@echo "... stoneshire"
-	@echo "... test_open_conf_f"
+	@echo "... test_open_file"
 	@echo "... test_fget_conf_value"
 .PHONY : help
 
