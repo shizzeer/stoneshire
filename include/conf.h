@@ -8,7 +8,7 @@
 		int property_value;
 	};
 
-	FILE *open_config_file(const char *filename_with_ext, size_t filename_len);
+	FILE *open_file(const char *filename_with_ext, const char *parent_dir, size_t filename_len, size_t parent_dir_len);
 	int fget_conf_value(FILE *conf_file, struct conf *config, const char *property);
-	void set_config_file_path(char *config_file_path, const char *filename_with_ext);
+	void set_file_path(char *config_file_path, const char *parent_dir, const char *filename_with_ext);
 #endif
