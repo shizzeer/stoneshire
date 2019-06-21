@@ -5,7 +5,6 @@
 #include "err_handlers.h"
 #include "conf.h"
 
-#define CONFIG_PATH_LEN 33
 #define VALUE_NOT_FOUND -1
 
 int fget_conf_value(FILE *conf_file, struct conf *config, const char *property) {
@@ -27,21 +26,22 @@ int fget_conf_value(FILE *conf_file, struct conf *config, const char *property) 
 	return VALUE_NOT_FOUND;
 }
 
-FILE *open_config_file(const char *filename_with_ext, size_t filename_len) {
-	char *config_file_path = (char *)malloc(CONFIG_PATH_LEN + filename_len);
-	if (config_file_path == NULL) {
-		print_error_and_exit("Malloc for config_file_path");
+FILE *open_file(const char *filename_with_ext, const char *parent_dir, size_t filename_len,
+					   size_t parent_dir_len) {
+	char *file_path = (char *)malloc((parent_dir_len + 1) + filename_len);
+	if (file_path == NULL) {
+		print_error_and_exit("Malloc for file_path in open_file");
 	}
 
 
-	set_config_file_path(config_file_path, filename_with_ext);
+	set_file_path(file_path, parent_dir, filename_with_ext);
 
-	FILE *config_file = fopen(config_file_path, "r");
-	free(config_file_path);
-	return config_file;
+	FILE *f = fopen(file_path, "r");
+	free(file_path);
+	return f;
 }
 
-void set_config_file_path(char *config_file_path, const char *filename_with_ext) {
-	strncpy(config_file_path, CONF_DIR, (strlen(CONF_DIR) + 1));
+void set_file_path(char *config_file_path, const char *parent_dir, const char *filename_with_ext) {
+	strncpy(config_file_path, parent_dir, (strlen(parent_dir) + 1));
 	strcat(config_file_path, filename_with_ext);
 }
