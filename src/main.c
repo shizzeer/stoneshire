@@ -9,9 +9,22 @@
 
 #include "err_handlers.h"
 #include "conf.h"
+#include "log.h"
+
+#define DEBUG
 
 static void server_listening_init(int *listen_socket, struct conf *config, struct sockaddr_in *server_addr);
 static bool port_is_valid(struct conf *config);
+
+static int accept_the_client(int listen_socket, struct sockaddr_in *client_addr) {
+	int addrlen = sizeof(*client_addr);
+	int conn_socket = accept(listen_socket, (struct sockaddr *)client_addr, &addrlen);
+	if (conn_socket < 0) {
+		print_error_and_exit("Creating connection socket");
+	}
+
+	return conn_socket;
+}
 
 static void init_address_struct(struct sockaddr_in *server_addr, struct conf *config) {
 	memset(server_addr, 0, sizeof(struct sockaddr_in));
@@ -22,11 +35,12 @@ static void init_address_struct(struct sockaddr_in *server_addr, struct conf *co
 
 int main() {
 
-	int listen_socket;
+	int listen_socket, conn_socket;
 	struct conf config;
 	struct sockaddr_in server_addr, client_addr;
 
 	server_listening_init(&listen_socket, &config, &server_addr);
+	conn_socket = accept_the_client(listen_socket, &client_addr);
 
 	return 0;
 }
@@ -46,7 +60,7 @@ static void server_listening_init(int *listen_socket, struct conf *config, struc
 		print_error_and_exit("Creating listening socket");
 	}
 
-	FILE *config_file = open_config_file("ports.conf", strlen("ports.conf"));
+	FILE *config_file = open_file("ports.conf", CONF_DIR, strlen("ports.conf"), strlen(CONF_DIR));
 	if (config_file == NULL) {
 		print_error_and_exit("Opening config file");
 	}
@@ -58,6 +72,13 @@ static void server_listening_init(int *listen_socket, struct conf *config, struc
 	}
 
 	init_address_struct(server_addr, config);
+
+	#ifdef DEBUG
+		int optval = 1;
+		if (setsockopt(*listen_socket, SOL_SOCKET, (SO_REUSEADDR | SO_REUSEPORT), &optval, sizeof(optval)) < 0) {
+			print_error_and_exit("Listening socket option");
+		}
+	#endif
 
 	int binding_error = bind(*listen_socket, (struct sockaddr *)server_addr, sizeof(*server_addr));
 	if (binding_error) {
