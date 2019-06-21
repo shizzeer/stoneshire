@@ -107,7 +107,7 @@ static void test_fget_conf_value_success(void **state) {
 
 	test_strcmp_fail(false);
 
-	FILE *conf_file = open_config_file("ports.conf", strlen("ports.conf"));
+	FILE *conf_file = open_file("ports.conf", CONF_DIR, strlen("ports.conf"), strlen(CONF_DIR));
 	return assert_int_equal(fget_conf_value(conf_file, &config, "PORT:"), 8888);
 }
 
@@ -122,7 +122,7 @@ static void test_fget_conf_value_fail(void **state) {
 	test_sscanf_fail(false);
 	test_getline_fail(false);
 
-	FILE *conf_file = open_config_file("ports.conf", strlen("ports.conf"));
+	FILE *conf_file = open_file("ports.conf", CONF_DIR, strlen("ports.conf"), strlen(CONF_DIR));
 	return assert_int_equal(fget_conf_value(conf_file, &config, "pORT:"), -1);
 }
 
