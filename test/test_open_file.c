@@ -47,7 +47,7 @@ static void test_open_file_success(void **state) {
 	expect_string(__wrap_fopen, mode, "r");
 	will_return(__wrap_fopen, WRAP_FOPEN_CORRECT);
 
-	FILE *config_file = open_file("ports.conf", CONF_DIR, strlen("ports.conf"), strlen(CONF_DIR));
+	FILE *config_file = open_file("ports.conf", CONF_DIR, "r");
 	assert_non_null(config_file);
 }
 
@@ -58,7 +58,7 @@ static void test_open_file_failed(void **state) {
 	expect_string(__wrap_fopen, mode, "r");
 	will_return(__wrap_fopen, WRAP_FOPEN_CORRECT);
 
-	FILE *config_file = open_file("wrong_file.conf", CONF_DIR, strlen("wrong_file.conf"), strlen(CONF_DIR));
+	FILE *config_file = open_file("wrong_file.conf", CONF_DIR, "r");
 	assert_null(config_file);
 }
 
