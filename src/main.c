@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h>	// for atoi
 #include <string.h>
 #include <sys/socket.h>
 #include <stdbool.h>
 #include <netinet/in.h> // for sockaddr_in struct
 #include <stdint.h> // for types in sockets structs
-#include <arpa/inet.h> // for inet_ntop to test init_address_struct
+#include <unistd.h>
 
 #include "err_handlers.h"
 #include "conf.h"
@@ -39,6 +39,7 @@ int main() {
 	struct conf config;
 	struct sockaddr_in server_addr, client_addr;
 
+	push_log_into_file(&config, "STONESHIRE_START_INFO", STONESHIRE_STARTED);
 	server_listening_init(&listen_socket, &config, &server_addr);
 	conn_socket = accept_the_client(listen_socket, &client_addr);
 
@@ -48,26 +49,33 @@ int main() {
 static bool port_is_valid(struct conf *config) {
 	if (config->property_value >= 1024 && config->property_value <= 49151) {
 		return true;
-	} else {
-		return false;
+	}
+	fprintf(stderr, "%s\n", "Listening port is not valid. Try to use port from 1024 to 49151 (user ports).");
+	return false;
+}
+
+static int create_socket() {
+	int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock_fd < 0) {
+		print_error_and_exit("Creating socket");
+	}
+	return sock_fd;
+}
+
+static void bind_socket(int sock_fd, struct sockaddr *addr) {
+	int binding_error = bind(sock_fd, addr, sizeof(*addr));
+	if (binding_error) {
+		print_error_and_exit("Binding socket");
 	}
 }
 
 static void server_listening_init(int *listen_socket, struct conf *config, struct sockaddr_in *server_addr) {
 	
-	*listen_socket = socket(AF_INET, SOCK_STREAM, 0);
-	if ((*listen_socket) < 0) {
-		print_error_and_exit("Creating listening socket");
-	}
+	*listen_socket = create_socket();
+	push_log_into_file(config, "LISTENING_SOCKET_INIT", LISTENING_SOCKET_INIT);
 
-	FILE *config_file = open_file("ports.conf", CONF_DIR, strlen("ports.conf"), strlen(CONF_DIR));
-	if (config_file == NULL) {
-		print_error_and_exit("Opening config file");
-	}
-
-	config->property_value = fget_conf_value(config_file, config, "PORT:");
-	if (!port_is_valid(config)) {
-		fprintf(stderr, "%s\n", "Listening port is not valid. Try to use port from 1024 to 49151 (user ports).");
+	int error_config_load = config_load_from_file(config, "ports.conf", "PORT:");
+	if (!port_is_valid(config) || error_config_load) {
 		exit(EXIT_FAILURE);
 	}
 
@@ -80,14 +88,9 @@ static void server_listening_init(int *listen_socket, struct conf *config, struc
 		}
 	#endif
 
-	int binding_error = bind(*listen_socket, (struct sockaddr *)server_addr, sizeof(*server_addr));
-	if (binding_error) {
-		print_error_and_exit("Binding listening socket");
-	}
+	bind_socket(*listen_socket, (struct sockaddr *)server_addr);
 
 	if (listen(*listen_socket, 5) < 0) {
 		print_error_and_exit("Listen socket");
 	}
-
-	fclose(config_file);
 }
