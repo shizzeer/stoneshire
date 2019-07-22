@@ -1,7 +1,7 @@
 option(ENABLE_SRC_COMPILATION "Take files from src to the compilation process." ON)
 
 # Initialize directories with include files to inform the compiler
-set(STONESHIRE_INCLUDE_DIRS CACHE STRING ${CMAKE_SOURCE_DIR}/include)
+set(STONESHIRE_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include)
 
 # Initialize variable with necessary configuration file
 set(STONESHIRE_CONFIG_FILE ${CMAKE_SOURCE_DIR}/conf/conf.c)
